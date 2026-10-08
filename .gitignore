@@ -1,0 +1,13 @@
+# Build artifacts
+bin/
+*.exe
+
+# Runtime data
+*.db
+ckg.db
+
+# Go
+vendor/
+
+# OS
+.DS_Store

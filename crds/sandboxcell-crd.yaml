@@ -1,0 +1,57 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: sandboxcells.autoforge.io
+spec:
+  group: autoforge.io
+  names:
+    kind: SandboxCell
+    plural: sandboxcells
+    singular: sandboxcell
+    shortNames:
+      - sbx
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              required: [taskType, sourceRef]
+              properties:
+                taskType:
+                  type: string
+                  enum: [codegen, build, test, security-scan, legacy-analysis]
+                sourceRef:
+                  type: object
+                  properties:
+                    repoUrl: {type: string}
+                    commitSha: {type: string}
+                    branch: {type: string}
+                resources:
+                  type: object
+                  properties:
+                    cpu: {type: string}
+                    memory: {type: string}
+                    timeoutSeconds: {type: integer}
+                securityProfile:
+                  type: object
+                  properties:
+                    networkEgress:
+                      type: string
+                      enum: [none, test-db, registry-only, full]
+                    readOnlyRootFs: {type: boolean}
+                    runAsNonRoot: {type: boolean}
+            status:
+              type: object
+              properties:
+                phase:
+                  type: string
+                  enum: [Pending, Running, Succeeded, Failed, Escalated]
+                podRef: {type: string}
+                exitCode: {type: integer}
+                logs: {type: string}

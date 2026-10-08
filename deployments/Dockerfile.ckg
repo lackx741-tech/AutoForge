@@ -1,0 +1,13 @@
+FROM golang:1.21-alpine AS builder
+WORKDIR /app
+COPY cmd/ckg-service/go.mod .
+RUN go mod download
+COPY cmd/ckg-service/main.go .
+RUN CGO_ENABLED=1 go build -o ckg-service main.go
+
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates sqlite-libs
+WORKDIR /root/
+COPY --from=builder /app/ckg-service .
+EXPOSE 8080
+CMD ["./ckg-service"]

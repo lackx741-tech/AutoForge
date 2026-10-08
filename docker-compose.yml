@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  ckg-service:
+    build:
+      context: .
+      dockerfile: ./deployments/Dockerfile.ckg
+    ports:
+      - "8080:8080"
+    volumes:
+      - ckg-data:/data
+    environment:
+      - PORT=8080
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+
+  saga-supervisor:
+    build:
+      context: .
+      dockerfile: ./deployments/Dockerfile.saga
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+      - CKG_URL=http://ckg-service:8080
+    depends_on:
+      ckg-service:
+        condition: service_healthy
+
+  # Sandbox cell simulator (creates ephemeral containers)
+  sandbox-pool:
+    image: docker:24-dind
+    privileged: true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - sandbox-cache:/cache
+
+volumes:
+  ckg-data:
+  sandbox-cache:

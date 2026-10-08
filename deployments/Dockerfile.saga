@@ -1,0 +1,13 @@
+FROM golang:1.21-alpine AS builder
+WORKDIR /app
+COPY cmd/saga-supervisor/go.mod .
+RUN go mod download
+COPY cmd/saga-supervisor/main.go .
+RUN go build -o saga-supervisor main.go
+
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+COPY --from=builder /app/saga-supervisor .
+EXPOSE 8081
+CMD ["./saga-supervisor"]

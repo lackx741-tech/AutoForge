@@ -1,0 +1,17 @@
+apiVersion: autoforge.io/v1
+kind: SandboxCell
+metadata:
+  name: build-example-001
+spec:
+  taskType: build
+  sourceRef:
+    repoUrl: "https://github.com/example/repo"
+    commitSha: "abc123"
+  resources:
+    cpu: "2"
+    memory: "4Gi"
+    timeoutSeconds: 1800
+  securityProfile:
+    networkEgress: registry-only
+    readOnlyRootFs: true
+    runAsNonRoot: true
