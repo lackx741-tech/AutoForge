@@ -1,6 +1,6 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:1.23 AS builder
 WORKDIR /app
-COPY cmd/ckg-service/go.mod .
+COPY cmd/ckg-service/go.mod cmd/ckg-service/go.sum ./
 RUN go mod download
 COPY cmd/ckg-service/main.go .
 RUN CGO_ENABLED=1 go build -o ckg-service main.go

@@ -1,9 +1,9 @@
-FROM golang:1.21-alpine AS builder
+FROM golang:1.23-alpine AS builder
 WORKDIR /app
-COPY cmd/cli/go.mod .
+COPY cmd/cli/go.mod ./
 RUN go mod download
 COPY cmd/cli/main.go .
-RUN go build -o autoforge main.go
+RUN CGO_ENABLED=0 go build -o autoforge main.go
 
 FROM alpine:latest
 COPY --from=builder /app/autoforge /usr/local/bin/

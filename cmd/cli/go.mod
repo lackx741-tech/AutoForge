@@ -1,3 +1,3 @@
-module github.com/autoforge-io/cli
+module github.com/lackx741-tech/AutoForge/cmd/cli
 
-go 1.21
+go 1.23
