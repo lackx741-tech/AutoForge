@@ -1,4 +1,5 @@
-FROM golang:1.23 AS builder
+FROM golang:1.23-alpine AS builder
+RUN apk add --no-cache gcc musl-dev
 WORKDIR /app
 COPY cmd/ckg-service/go.mod cmd/ckg-service/go.sum ./
 RUN go mod download
@@ -6,7 +7,7 @@ COPY cmd/ckg-service/main.go .
 RUN CGO_ENABLED=1 go build -o ckg-service main.go
 
 FROM alpine:latest
-RUN apk --no-cache add ca-certificates sqlite-libs
+RUN apk --no-cache add ca-certificates
 WORKDIR /root/
 COPY --from=builder /app/ckg-service .
 EXPOSE 8080
