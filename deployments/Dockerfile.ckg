@@ -1,10 +1,10 @@
 FROM golang:1.23-alpine AS builder
 RUN apk add --no-cache gcc musl-dev
 WORKDIR /app
-COPY cmd/ckg-service/go.mod cmd/ckg-service/go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download
-COPY cmd/ckg-service/main.go .
-RUN CGO_ENABLED=1 go build -o ckg-service main.go
+COPY cmd/ ./cmd/
+RUN CGO_ENABLED=1 go build -o ckg-service ./cmd/ckg-service
 
 FROM alpine:latest
 RUN apk --no-cache add ca-certificates

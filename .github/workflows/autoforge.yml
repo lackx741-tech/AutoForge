@@ -20,32 +20,17 @@ jobs:
         uses: actions/setup-go@v7
         with:
           go-version: '1.23'
-
-      - name: Cache Go modules
-        uses: actions/cache@v6
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          cache: true
+          cache-dependency-path: go.sum
 
       - name: Build CKG Service (CGO for SQLite)
-        working-directory: cmd/ckg-service
-        run: |
-          go mod tidy
-          CGO_ENABLED=1 go build -v -o ../../bin/ckg-service-darwin .
+        run: CGO_ENABLED=1 go build -v -o bin/ckg-service-darwin ./cmd/ckg-service
 
       - name: Build Saga Supervisor
-        working-directory: cmd/saga-supervisor
-        run: |
-          go mod tidy
-          go build -v -o ../../bin/saga-supervisor-darwin .
+        run: go build -v -o bin/saga-supervisor-darwin ./cmd/saga-supervisor
 
       - name: Build CLI
-        working-directory: cmd/cli
-        run: |
-          go mod tidy
-          go build -v -o ../../bin/autoforge-darwin .
+        run: go build -v -o bin/autoforge-darwin ./cmd/cli
 
       - name: Smoke test CKG Service
         run: |

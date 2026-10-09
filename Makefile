@@ -8,15 +8,15 @@ build: build-ckg build-saga build-cli
 # CKG requires CGO for SQLite
 build-ckg:
 	@mkdir -p bin
-	cd cmd/ckg-service && go mod tidy && CGO_ENABLED=1 go build -o ../../bin/ckg-service .
+	CGO_ENABLED=1 go build -o bin/ckg-service ./cmd/ckg-service
 
 build-saga:
 	@mkdir -p bin
-	cd cmd/saga-supervisor && go mod tidy && go build -o ../../bin/saga-supervisor .
+	go build -o bin/saga-supervisor ./cmd/saga-supervisor
 
 build-cli:
 	@mkdir -p bin
-	cd cmd/cli && go mod tidy && go build -o ../../bin/autoforge .
+	go build -o bin/autoforge ./cmd/cli
 
 run: build
 	@echo "Starting services..."
